@@ -1,0 +1,32 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: edusubmit-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Copy .env.example to .env and set MSSQL_SA_PASSWORD}
+      MSSQL_MEMORY_LIMIT_MB: "2048"
+    ports:
+      - "1433:1433"
+    volumes:
+      - edusubmit_sqlserver_data:/var/opt/mssql
+    restart: unless-stopped
+
+  submission-api:
+    build:
+      context: .
+      dockerfile: src/EduSubmit.Submission.Api/Dockerfile
+    container_name: edusubmit-submission-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__EduSubmit: "Server=sqlserver,1433;Database=EduSubmitDb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+    ports:
+      - "5001:8080"
+    depends_on:
+      - sqlserver
+    restart: unless-stopped
+
+volumes:
+  edusubmit_sqlserver_data:

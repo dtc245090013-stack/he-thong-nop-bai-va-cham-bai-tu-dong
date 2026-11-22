@@ -1,0 +1,3 @@
+The EF Core migration is intentionally generated on the development machine using dotnet-ef.
+This ensures the checked-in migration reflects the exact installed EF Core 10 package and model.
+Follow section 4 in README.md, then commit the generated Migrations folder.

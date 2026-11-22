@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:5001
+
+### Health check
+GET {{baseUrl}}/health
+
+### 1. Lấy danh sách bài tập
+GET {{baseUrl}}/api/assignments
+
+### 2. Nộp bài (dùng dữ liệu mẫu SV001)
+POST {{baseUrl}}/api/assignments/1/submissions
+Content-Type: application/json
+
+{
+  "studentCode": "SV001",
+  "repositoryUrl": "https://github.com/example/student-assignment"
+}
+
+### 3. Tra cứu bài nộp - thay 1 bằng ID nhận từ response POST
+GET {{baseUrl}}/api/submissions/1
+
+### 4. Tra cứu bài nộp của sinh viên - thay 1 bằng studentId trong response POST
+GET {{baseUrl}}/api/students/1/submissions
+
+### 5. Kiểm tra validation - phải trả về 400 Bad Request
+POST {{baseUrl}}/api/assignments/1/submissions
+Content-Type: application/json
+
+{
+  "studentCode": "",
+  "repositoryUrl": "not-a-url"
+}
